@@ -1,3 +1,3 @@
 # Calculator-Project
 
-I am creating a simple calculator using html, css, and JavaScript. 
+I am creating a simple calculator using HTML, CSS, and JavaScript. 
