@@ -7,11 +7,20 @@ let equal = document.querySelector('#equal');
 let clear = document.querySelector('#clear');
 let erase = document.querySelector('#erase');
 let decimal = document.querySelector('#decimal');
+let buttons = document.querySelectorAll('button');
+
+//Makes start values for display: history and answer blank and able to be filled with answers later//
+displayHistory = "";
+displayAnswer = "";
+
+//Set last operation to empty and decimal is not in use right now//
+let lastOperation = "";
+let useDecimal = false;
 
 //e in the event listener represents an element that was affected (button being clicked)//
-keys.addEventListener('click', e => {
+buttons.addEventListener('click', e => {
     if (e.target.matches('button')) {
-        let key = e.target;
-        let action = key.dataset.action;
+        let buttons = e.target;
+        let action = buttons.dataset.action;
     }
 })
