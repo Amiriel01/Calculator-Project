@@ -2,14 +2,12 @@
 
 **Objective**
 
-***Calculator***
-
 The objective is to create a simple calculator using HTML, CSS, and JavaScript. 
 
 ***Calculator Images***
 
 Blank Calculator:
-![](images/blankcaculator.png)
+![](images/blankcalculator.png)
 
 Calculator in Use:
 ![](images/calculatoruse.png)
