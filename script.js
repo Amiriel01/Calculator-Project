@@ -17,10 +17,15 @@ displayAnswer = "";
 let lastOperation = "";
 let useDecimal = false;
 let result = null;
+let pressedEqual = false;
 
 //e in the event listener represents an element that was affected (button being clicked). This section is for making the .number buttons and displays work.//
 number.forEach(number => {
     number.addEventListener('click', (e) => {
+        if (pressedEqual) {
+            noMessage();
+            return;
+        }
         //set up for decimal. If you have no decimal add decimal, else if you have decimal return with no additional decimals. Only allows one decimal per number string//
         if (e.target.innerText === "." && !useDecimal) {
             useDecimal = true;
@@ -34,9 +39,16 @@ number.forEach(number => {
     })
 });
 
+function noMessage() {
+    alert("Press clear to continue!");
+}
 //This section makes the operations clicks work//
 operation.forEach(operation => {
     operation.addEventListener('click', (e) => {
+        if (pressedEqual) {
+            noMessage();
+            return;
+        }
         //this keeps the user from using the operation before entering a number//
         if (!answer) result;
         //this allows user to use decimals again after entering the operation//
@@ -45,15 +57,11 @@ operation.forEach(operation => {
         let operationSign = e.target.innerText;
         //lastOperation = operationSign;
         //console.log(operationSign);
-        if (history && answer && lastOperation) {
-            mathOperations();
-        } else {
-            result = parseFloat(displayAnswer);
-        }
+        result = parseFloat(displayAnswer);
         //this will start to move the number from answer to history when the operation is entered//
         moveNumber(operationSign);
         lastOperation = operationSign;
-        console.log(result);
+        //console.log(result);
     })
 });
 
@@ -66,31 +74,44 @@ function moveNumber(sign = '') {
 }
 
 function mathOperations() {
-    //use parseFloat because numbers are storing in the variables answer and history as strings//
+    console.log(result);
+    console.log(displayAnswer);
+    //use parseFloat because numbers are storing in the variables as strings//
     if (lastOperation === '+') {
         result = parseFloat(result) + parseFloat(displayAnswer);
     } else if (lastOperation === '-') {
         result = parseFloat(result) - parseFloat(displayAnswer);
     } else if (lastOperation === 'x') {
         result = parseFloat(result) * parseFloat(displayAnswer);
-    } else if (lastOperation === '&#247') {
+    } else if (lastOperation === '÷') {
+        if (parseFloat(displayAnswer) == "0") {
+            alert("Zero divisors are not allowed.");
+            return false;
+        }
         result = parseFloat(result) / parseFloat(displayAnswer);
     }
+    return true;
 };
 
 //this section will make the = sign functional//
 equal.addEventListener('click', (e) => {
+    if (pressedEqual) {
+        noMessage();
+        return;
+    }
     //set the = to only work after there is a number,operation, and second number//
     if (!displayAnswer || !displayHistory) return;
     // reset decimal again to be used just like before //
     useDecimal = false;
     //as long as there are two numbers 
-    mathOperations();
+    let allowed=mathOperations();
+    if (!allowed) return;
     //this will move the second number up when the = sign is pressed//
     moveNumber();
     //this will put the answer in the answer display window//
     answer.innerText = result;
     displayAnswer = result;
+    pressedEqual = true;
 });
 
 //this will set up the clear button by deleting all info in stored and display//
@@ -99,11 +120,25 @@ clear.addEventListener('click', (e) => {
     answer.innerText = "0";
     displayHistory = "";
     displayAnswer = "";
-    result = "";
+    result = "0";
+    pressedEqual = false;
+
+    if (!history && !answer) {
+        return mathOperations();
+    }
 });
 
 //this will set up the delete button to delete the last last numbers entered//
 erase.addEventListener('click', (e) => {
     answer.innerText = "0";
     displayAnswer = "";
+
+    if (pressedEqual) {
+        noMessage();
+        return;
+    }
+
+    if (!answer) {
+        return answer;
+    }
 });
