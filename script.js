@@ -7,7 +7,7 @@ let equal = document.querySelector('#equal');
 let clear = document.querySelector('#clear');
 let erase = document.querySelector('#erase');
 let decimal = document.querySelector('#decimal');
-let buttons = document.querySelectorAll('button');
+//let buttons = document.querySelectorAll('button'); (Not Needed)//
 
 //Makes start values for display: history and answer blank and able to be filled with answers later//
 displayHistory = "";
@@ -16,7 +16,7 @@ displayAnswer = "";
 //Set last operation to empty and decimal is not in use right now//
 let lastOperation = "";
 let useDecimal = false;
-
+let result = null;
 
 //e in the event listener represents an element that was affected (button being clicked). This section is for making the .number buttons and displays work.//
 number.forEach(number => {
@@ -28,16 +28,8 @@ number.forEach(number => {
         else if (e.target.innerText === "." && useDecimal) {
             return;
         }
-        /*displayAnswer += e.target.innerText;
-        answer.innerText = displayAnswer;*/
-        //this will cause the number clicked to display in the answer section//
-        if (!!lastOperation) {
-            displayAnswer = e.target.innerText;
-            lastOperation = null;
-        } else {
-            displayAnswer += e.target.innerText;
-        }
-        
+
+        displayAnswer += e.target.innerText;
         answer.innerText = displayAnswer;
     })
 });
@@ -53,14 +45,15 @@ operation.forEach(operation => {
         let operationSign = e.target.innerText;
         //lastOperation = operationSign;
         //console.log(operationSign);
-        if (answer && history && lastOperation) {
-             mathOperation();
+        if (history && answer && lastOperation) {
+            mathOperations();
         } else {
-            result = parseFloat(answer);
+            result = parseFloat(displayAnswer);
         }
         //this will start to move the number from answer to history when the operation is entered//
         moveNumber(operationSign);
-        lastOperation=operationSign;
+        lastOperation = operationSign;
+        console.log(result);
     })
 });
 
@@ -69,6 +62,48 @@ function moveNumber(sign = '') {
     displayHistory += displayAnswer + ' ' + sign + ' ';
     history.innerText = displayHistory;
     answer.innerText = '';
-    answer = '';
+    displayAnswer = '';
 }
 
+function mathOperations() {
+    //use parseFloat because numbers are storing in the variables answer and history as strings//
+    if (lastOperation === '+') {
+        result = parseFloat(result) + parseFloat(displayAnswer);
+    } else if (lastOperation === '-') {
+        result = parseFloat(result) - parseFloat(displayAnswer);
+    } else if (lastOperation === 'x') {
+        result = parseFloat(result) * parseFloat(displayAnswer);
+    } else if (lastOperation === '&#247') {
+        result = parseFloat(result) / parseFloat(displayAnswer);
+    }
+};
+
+//this section will make the = sign functional//
+equal.addEventListener('click', (e) => {
+    //set the = to only work after there is a number,operation, and second number//
+    if (!displayAnswer || !displayHistory) return;
+    // reset decimal again to be used just like before //
+    useDecimal = false;
+    //as long as there are two numbers 
+    mathOperations();
+    //this will move the second number up when the = sign is pressed//
+    moveNumber();
+    //this will put the answer in the answer display window//
+    answer.innerText = result;
+    displayAnswer = result;
+});
+
+//this will set up the clear button by deleting all info in stored and display//
+clear.addEventListener('click', (e) => {
+    history.innerText = "0";
+    answer.innerText = "0";
+    displayHistory = "";
+    displayAnswer = "";
+    result = "";
+});
+
+//this will set up the delete button to delete the last last numbers entered//
+erase.addEventListener('click', (e) => {
+    answer.innerText = "0";
+    displayAnswer = "";
+});
