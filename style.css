@@ -25,12 +25,14 @@ body {
 #history {
     font-size: 32px;
     font-weight: bold;
+    margin-right: 8px;
 }
 
 #answer {
     margin-top: 28px;
     font-size: 32px;
     font-weight: bold;
+    margin-right: 8px;
 }
 
 .calculator-keys {
